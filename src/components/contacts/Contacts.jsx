@@ -9,7 +9,6 @@ const Contacts = () => {
             <p>Телефон: <Link href="tel:+7-495-790-35-03">+7 495 79 03 5 03</Link> (ежедневно: с 09-00 до 21-00)</p>
             <p>Email: <Link href="mailto:office@bosanoga.ru">office@bosanoga.ru</Link></p>
         </section>
-        
     );
 };
 
