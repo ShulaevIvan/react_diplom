@@ -9,6 +9,7 @@ import Catalog from './components/catalog/Catalog';
 import Footer from './components/footer/Footer';
 import About from './components/about/About';
 import Contacts from './components/contacts/Contacts';
+import Page404 from './components/page404/Page404';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path='catalog' element={<Catalog />}/>
               <Route path='about' element={<About />}/>
               <Route path='contacts' element={<Contacts />}/>
+              <Route path='*' element={<Page404 />} />
             </Route>
           </Routes>
           <Footer></Footer>
