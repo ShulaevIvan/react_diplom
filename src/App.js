@@ -12,8 +12,17 @@ import Contacts from './components/contacts/Contacts';
 import Page404 from './components/page404/Page404';
 
 function App() {
+  const initialState = {
+    goods: [],
+    topSalesGoods: [],
+    categories: [],
+    goodsCategories: [],
+    activeCategory: null,
+  }
+  const [appState, setAppState] = useState(initialState);
+
   return (
-    <Context.Provider>
+    <Context.Provider value={{state: appState, setState: setAppState}}>
       <div className="App">
         <BrowserRouter>
           <Header></Header>

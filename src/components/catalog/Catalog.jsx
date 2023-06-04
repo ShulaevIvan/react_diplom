@@ -1,33 +1,19 @@
 import React from "react";
 import demo from '../../img/products/superhero_sneakers.jpg'
-import Preloader from "../preloader/Preloader";
+import CatalogFilter from "../catalogFilter/CatalogFilter";
+
 
 const Catalog = () => {
+  
     return (
         <React.Fragment>
            <section className="catalog">
-           <Preloader/>
+           {/* <Preloader/> */}
             <h2 className="text-center">Каталог</h2>
             <form className="catalog-search-form form-inline">
               <input className="form-control" placeholder="Поиск" />
             </form>
-            <ul className="catalog-categories nav justify-content-center">
-              <li className="nav-item">
-                <a className="nav-link active" href="#">Все</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Женская обувь</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Мужская обувь</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Обувь унисекс</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">Детская обувь</a>
-              </li>
-            </ul>
+            <CatalogFilter />
             <div className="row">
               <div className="col-4">
                 <div className="card catalog-item-card">
