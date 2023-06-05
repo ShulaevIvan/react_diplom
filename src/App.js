@@ -18,6 +18,7 @@ function App() {
     categories: [],
     goodsCategories: [],
     activeCategory: null,
+    showMoreGoodsBtn: true,
   }
   const [appState, setAppState] = useState(initialState);
 

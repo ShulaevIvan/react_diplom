@@ -13,14 +13,24 @@ const CatalogFilter = () => {
     const filterHandler = (categoryId) => {
         context.setState(prevState => ({
             ...prevState,
-            activeCategory: prevState.activeCategory = categoryId
+            activeCategory: prevState.activeCategory = categoryId,
+            showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
         }));
     }
 
     useEffect(() => {
+        console.log(context.state.goodsCategories)
+    })
+
+    useEffect(() => {
+        let url = `http://localhost:7070/api/items?categoryId=${context.state.activeCategory}`
+        if (context.state.activeCategory === 'all') {
+            url = 'http://localhost:7070/api/items'
+        }
+
         setLoading(true);
         const fetchFunc = async () => {
-            await fetch(`http://localhost:7070/api/items?categoryId=${context.state.activeCategory}`, {
+            await fetch(`${url}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -28,15 +38,16 @@ const CatalogFilter = () => {
             })
             .then((response) => response.json())
             .then((data) => {
+                console.log(data)
                 context.setState(prevState => ({
                     ...prevState,
-                    goodsCategories: prevState.goodsCategories = data,
+                    goodsCategories: data,
                 }));
-                console.log(context.state.goodsCategories)
                 setLoading(false)
-            })
+            });
         }
         fetchFunc();
+        
     }, [context.state.activeCategory])
 
     useEffect(() => {
@@ -64,18 +75,21 @@ const CatalogFilter = () => {
       }, []);
 
     return (
+        <React.Fragment>
         <ul className="catalog-categories nav justify-content-center">
             <li className="nav-item">
-                <Link className="nav-link active" onClick={() => filterHandler('Все')}>Все</Link>
+                <Link className="nav-link active" onClick={() => filterHandler('all')}>Все</Link>
             </li>
-            {loading ? <Preloader /> : context.state.categories.map((item) => {
+            {!loading ? context.state.categories.map((item) => {
                 return (
                     <li className="nav-item" key={item.id}>
                         <Link className="nav-link" onClick={() => filterHandler(item.id)}>{item.title}</Link>
                     </li>
                 );
-            })}
+            }) : null}
         </ul>
+        {loading ? <Preloader /> : null}
+        </React.Fragment>
     );
 };
 
