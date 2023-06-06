@@ -6,24 +6,31 @@ import Preloader from "../preloader/Preloader";
 
 const Catalog = () => {
   const context = useContext(Context);
+  const [loadData, setLoadData] = useState({data: undefined});
   const [loading, setLoading] = useState(false);
 
   const loadMoreHandler = async () => {
     setLoading(true)
-    await fetch(`http://localhost:7070/api/items?categoryId=${context.state.activeCategory.category}&offset=${context.state.activeCategory.page}`)
-    .then((response) => response.json())
-    .then((data) => {
-      context.setState(prevState => ({
-        ...prevState,
-        showMoreGoodsBtn: data.length < 6 ? prevState.showMoreGoodsBtn = false : prevState.showMoreGoodsBtn = true,
-        activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: Number(prevState.activeCategory.page + data.length)},
-        goodsCategories: prevState.goodsCategories = [...prevState.goodsCategories, ...data]
-          .reduce((result, item) => {
-            return result.includes(item) ? result : [...result, item]
-          }, []),
-      }));
-      setLoading(false);
-    })
+      await fetch(`http://localhost:7070/api/items?categoryId=${context.state.activeCategory.category}&offset=${context.state.activeCategory.page}`)
+          .then((response) => response.json())
+          .then((data) => {
+            // setLoadData(prevState => ({ data: prevState.data = data, }));
+
+            context.setState(prevState => ({
+              ...prevState,
+              activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: prevState.activeCategory.page += data.length},
+              goodsCategories: prevState.goodsCategories = [
+                ...prevState.goodsCategories,
+                ...data
+                // ...data.filter(({ id: dataId }) => !context.state.goodsCategories.some(({ id: curretnId }) => curretnId === dataId)),
+              ],
+              // showMoreGoodsBtn: data.length < 6 || 
+              //   JSON.stringify(loadData.data) === JSON.stringify(data) ? 
+              //     prevState.showMoreGoodsBtn = false : prevState.showMoreGoodsBtn = true,
+            }));      
+            setLoading(false);
+          });
+          console.log(context.state.activeCategory.page)
   };
 
   return (
@@ -37,7 +44,7 @@ const Catalog = () => {
           <div className="row">
             {context.state.goodsCategories.map((good) => {
               return (
-                <div className="col-4" key={Math.random() + good.id}>
+                <div className="col-4" key={Math.random()}>
                   <div className="card catalog-item-card">
                       <img src={good.images[0] ? good.images[0] : good.images[1]} className="card-img-top img-fluid" alt={good.title} />
                       <div className="card-body">

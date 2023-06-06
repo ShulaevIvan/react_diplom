@@ -11,7 +11,7 @@ const Header = () => {
                     <NavLink className="navbar-brand" to={'/'}><img src={logo} alt="Bosa Noga" /></NavLink>
                     <div className="collapse navbar-collapse" id="navbarMain">
                     <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active">
+                        <li className="nav-item">
                             <NavLink  className="nav-link" to={'/'}>Главная</NavLink>
                         </li>
                         <li className="nav-item">

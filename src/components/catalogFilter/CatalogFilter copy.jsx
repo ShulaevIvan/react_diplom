@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Context } from "../../Context";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -9,29 +9,14 @@ import Preloader from "../preloader/Preloader";
 const CatalogFilter = () => {
     const context = useContext(Context);
     const [loading, setLoading] = useState(null);
-    const [activeLink, setActiveLink] = useState({
-        linkRefs: useRef([]),
-        isActive: 0,
-    });
 
-    const filterHandler = (categoryId, index) => {
+    const filterHandler = (categoryId) => {
         context.setState(prevState => ({
             ...prevState,
-            activeCategory: prevState.activeCategory = {category: categoryId, page: 0},
+            activeCategory: prevState.activeCategory = {category: categoryId, page: 1},
             showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
         }));
-        
-        setTimeout(() => {
-                activeLink.linkRefs.current[index].classList.add('active');
-        }, 50);
     };
-
-    useEffect(() => {
-        setTimeout(() => {
-            activeLink.linkRefs.current[0].click();
-        }, 100)
-    }, [])
-
 
     useEffect(() => {
         let url = `http://localhost:7070/api/items?categoryId=${context.state.activeCategory.category}`
@@ -47,15 +32,14 @@ const CatalogFilter = () => {
                 .then((data) => {
                     context.setState(prevState => ({
                         ...prevState,
-                        activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: data.length},
-                        goodsCategories: prevState.goodsCategories = [...data],
+                        goodsCategories: prevState.goodsCategories = data,
                     }));
                     setLoading(false);
                 });
             }
             fetchFunc();
         
-    }, [context.state.activeCategory.category])
+    }, [context.state.activeCategory])
 
     useEffect(() => {
         setLoading(true)
@@ -84,10 +68,13 @@ const CatalogFilter = () => {
     return (
         <React.Fragment>
         <ul className="catalog-categories nav justify-content-center">
-            {!loading ? context.state.categories.map((item, i) => {
+            <li className="nav-item">
+                <Link className="nav-link active" onClick={() => filterHandler('all')}>Все</Link>
+            </li>
+            {!loading ? context.state.categories.map((item) => {
                 return (
                     <li className="nav-item" key={item.id}>
-                        <Link ref={(item) => (activeLink.linkRefs.current[i] = item)}  className={"nav-link"} to = {'#'} onClick={() => filterHandler(item.id, i)}>{item.title}</Link>
+                        <Link className="nav-link" onClick={() => filterHandler(item.id)}>{item.title}</Link>
                     </li>
                 );
             }) : null}

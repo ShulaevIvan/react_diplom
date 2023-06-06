@@ -2,27 +2,32 @@ import React, { useState } from "react";
 import CatalogFilter from "../catalogFilter/CatalogFilter";
 import { Context } from "../../Context";
 import { useContext } from "react";
+import { useEffect } from "react";
 import Preloader from "../preloader/Preloader";
 
 const Catalog = () => {
   const context = useContext(Context);
-  const [loading, setLoading] = useState(false);
+  const [loadData, setLoadData] = useState({data: undefined});
 
   const loadMoreHandler = async () => {
-    setLoading(true)
     await fetch(`http://localhost:7070/api/items?categoryId=${context.state.activeCategory.category}&offset=${context.state.activeCategory.page}`)
     .then((response) => response.json())
     .then((data) => {
+      setLoadData(prevState => ({data: prevState.data = data}));
+      console.log(data)
+      // const clearData = data.filter(({ id: dataId, title: dataTitle }) => 
+      // !context.state.goodsCategories.some(({ id: curretnId, title: currentTitle }) => curretnId === dataId && currentTitle === dataTitle));
+      // const clearData = prevState.goodsCategories.filter(({ id: dataId }) => data.state.goodsCategories.some(({ id: curretnId }) => curretnId === dataId));
       context.setState(prevState => ({
         ...prevState,
-        showMoreGoodsBtn: data.length < 6 ? prevState.showMoreGoodsBtn = false : prevState.showMoreGoodsBtn = true,
-        activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: Number(prevState.activeCategory.page + data.length)},
+        activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: context.state.activeCategory.page  += 3},
         goodsCategories: prevState.goodsCategories = [...prevState.goodsCategories, ...data]
-          .reduce((result, item) => {
-            return result.includes(item) ? result : [...result, item]
-          }, []),
+          // .reduce((result, item) => {
+          //   return result.includes(item) ? result : [...result, item];
+          // }, []),
       }));
-      setLoading(false);
+      console.log(context.state.activeCategory.page)
+      
     })
   };
 
@@ -52,7 +57,7 @@ const Catalog = () => {
           </div>
           <div className="text-center">
             {context.state.showMoreGoodsBtn ? <button className="btn btn-outline-primary" onClick={loadMoreHandler}>Загрузить ещё</button> : null}
-            {loading ? <Preloader /> : null}
+            {/* {loading ? <Preloader /> : null} */}
           </div>
         </section>
       </React.Fragment>     
