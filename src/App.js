@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Context } from './Context';
 import { useState } from 'react';
+import { useRef } from 'react'
 import Header from './components/header/Header';
 import HomePage from './components/homepage/Homepage';
 import Catalog from './components/catalog/Catalog';
@@ -20,6 +21,18 @@ function App() {
     activeCategory: {category: null, page: 1},
     showMoreGoodsBtn: true,
     allCategories: [],
+    searchHeader: {
+      searchCatalog: [],
+      searchPanelShow: false,
+      searchStr: undefined, 
+      searchIcon: useRef(null), 
+      searchPanel: useRef(null), 
+      searchPanelCatalog: useRef(null),
+    },
+    catalogFilter: {
+      linkRefs: useRef([]),
+      isActive: 0,
+    },
   }
   const [appState, setAppState] = useState(initialState);
 

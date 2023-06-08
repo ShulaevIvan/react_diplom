@@ -10,31 +10,6 @@ const Catalog = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
 
-  const catEqual = arr => arr.every( v => v === arr[0])
-
-  const searchInputHandler = () => {
-    context.setState(prevState => ({
-      ...prevState,
-      searchHeader: {
-        ...prevState.searchHeader,
-        searchStr: prevState.searchStr = prevState.searchHeader.searchPanelCatalog.current.value,
-      }
-    }));
-  }
-
-  const searchInputClear = () => {
-    context.setState(prevState => ({
-      ...prevState,
-      searchHeader: {
-        ...prevState.searchHeader,
-        searchHeader: {
-          ...prevState.searchHeader,
-          searchPanelCatalog: prevState.searchHeader.searchPanelCatalog.current.value = '',
-        },
-      },
-    }));
-  }
-
   const loadMoreHandler = async () => {
     setLoading(true)
     await fetch(`http://localhost:7070/api/items?categoryId=${context.state.activeCategory.category}&offset=${context.state.activeCategory.page}`)
@@ -54,38 +29,21 @@ const Catalog = () => {
   };
 
   useEffect(() => {
-    if (context.state.searchHeader.searchStr && context.state.searchHeader.searchStr !== ''){
+    if (context.state.searchHeader.searchStr){
       context.state.searchHeader.searchPanelCatalog.current.value = context.state.searchHeader.searchStr;
       const fetchFunc = async () => {
         await fetch(` http://localhost:7070/api/items?q=${context.state.searchHeader.searchPanelCatalog.current.value}`)
           .then(response => response.json())
           .then((data) => {
-            let catIndex = undefined;
-            const resultCat = [];
-            data.forEach((item) => resultCat.push(item.category));
-            const testEqual = catEqual(resultCat);
-            if (testEqual) {
-              const targetCat = context.state.categories.find(x => x.id === resultCat[0])
-              catIndex = context.state.categories.indexOf(targetCat)
-            }
             context.setState(prevState => ({
               ...prevState,
-              searchHeader: {
-                ...prevState.searchHeader,
-                goodsCategories:  prevState.goodsCategories = data,
-                catalogFilter: testEqual ? 
-                  prevState.catalogFilter = {...prevState.catalogFilter, isActive: catIndex} : 
-                    prevState.catalogFilter = {...prevState.catalogFilter, isActive: 0},
-                activeCategory: testEqual ? 
-                  prevState.activeCategory = {category: catIndex, page: 0} : 
-                    prevState.activeCategory = {category: 0, page: 0},
-              }
+              searchHeader: {...prevState.searchHeader, searchCatalog: prevState.searchHeader.searchCatalog = data }
             }));
+            console.log(context.state.searchHeader.searchCatalog)
           })
       }
       fetchFunc();
-    }
-    
+    } 
   }, [context.state.searchHeader.searchStr]);
 
   return (
@@ -93,30 +51,11 @@ const Catalog = () => {
         <section className="catalog">
           <h2 className="text-center">Каталог</h2>
           <form className={location.pathname === '/catalog' ? 'catalog-search-form form-inline': 'catalog-search-form form-inline search-hidden'}>
-            <input 
-            ref={context.state.searchHeader.searchPanelCatalog} 
-            className="form-control" 
-            placeholder="Поиск" 
-            onChange={searchInputHandler}
-            onClick={searchInputClear} 
-            />
+            <input ref={context.state.searchHeader.searchPanelCatalog} className="form-control" placeholder="Поиск"  />
           </form>
           <CatalogFilter />
           <div className="row">
-            {!context.state.searchHeader.searchCatalog.length > 0 ? context.state.goodsCategories.map((good) => {
-              return (
-                <div className="col-4" key={Math.random() + good.id}>
-                  <div className="card catalog-item-card">
-                      <img src={good.images[0] ? good.images[0] : good.images[1]} className="card-img-top img-fluid" alt={good.title} />
-                      <div className="card-body">
-                        <p className="card-text">{good.title}</p>
-                        <p className="card-text">{good.price}</p>
-                        <a href="/products/1.html" className="btn btn-outline-primary">Заказать</a>
-                      </div>
-                    </div>
-                  </div>
-                );
-            }) : context.state.searchHeader.searchCatalog.map((good) => {
+            {context.state.goodsCategories.map((good) => {
               return (
                 <div className="col-4" key={Math.random() + good.id}>
                   <div className="card catalog-item-card">

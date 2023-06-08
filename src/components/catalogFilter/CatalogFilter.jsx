@@ -9,28 +9,38 @@ import Preloader from "../preloader/Preloader";
 const CatalogFilter = () => {
     const context = useContext(Context);
     const [loading, setLoading] = useState(null);
-    const [activeLink, setActiveLink] = useState({
-        linkRefs: useRef([]),
-        isActive: 0,
-    });
 
     const filterHandler = (categoryId, index) => {
+        if (context.state.searchHeader.searchCatalog !== []) {
+            context.setState(prevState => ({
+                ...prevState,
+                activeCategory: prevState.activeCategory = {category: categoryId, page: 0},
+                showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
+                searchHeader: {...prevState.searchHeader, searchCatalog: prevState.searchHeader.searchCatalog = [] }
+            }));
+        }
+        else {
+            context.setState(prevState => ({
+                ...prevState,
+                activeCategory: prevState.activeCategory = {category: categoryId, page: 0},
+                showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
+            }));
+        }
         context.setState(prevState => ({
             ...prevState,
-            activeCategory: prevState.activeCategory = {category: categoryId, page: 0},
-            showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
+            catalogFilter: prevState.CatalogFilter = {...prevState.catalogFilter, isActive: prevState.isActive = index}
         }));
-        
-        setTimeout(() => {
-                activeLink.linkRefs.current[index].classList.add('active');
-        }, 50);
     };
 
     useEffect(() => {
         setTimeout(() => {
-            activeLink.linkRefs.current[0].click();
-        }, 100)
-    }, [])
+            context.state.catalogFilter.linkRefs.current.map((item, i) => {
+                if (i === context.state.catalogFilter.isActive && item) {
+                    item.click();
+                }
+            });
+        }, 300);
+    }, []);
 
 
     useEffect(() => {
@@ -87,7 +97,11 @@ const CatalogFilter = () => {
             {!loading ? context.state.categories.map((item, i) => {
                 return (
                     <li className="nav-item" key={item.id}>
-                        <Link ref={(item) => (activeLink.linkRefs.current[i] = item)}  className={"nav-link"} to = {'#'} onClick={() => filterHandler(item.id, i)}>{item.title}</Link>
+                        <Link 
+                            ref={(item) => (context.state.catalogFilter.linkRefs.current[i] = item)}  
+                            className={`nav-link ${context.state.catalogFilter.isActive === i ? 'active' : null}`} 
+                            to = {'#'} onClick={() => filterHandler(item.id, i)}>{item.title}
+                        </Link>
                     </li>
                 );
             }) : null}
