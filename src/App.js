@@ -11,6 +11,7 @@ import Footer from './components/footer/Footer';
 import About from './components/about/About';
 import Contacts from './components/contacts/Contacts';
 import Page404 from './components/page404/Page404';
+import Product from './components/product/Product/Product';
 
 function App() {
   const initialState = {
@@ -33,6 +34,8 @@ function App() {
       linkRefs: useRef([]),
       isActive: 0,
     },
+    cardView: {cardId: undefined, cardData: undefined},
+    userCart: {},
   }
   const [appState, setAppState] = useState(initialState);
 
@@ -44,10 +47,11 @@ function App() {
           <Routes>
             <Route  element={<HomePage />}>
               <Route path='/' />
-              <Route path='catalog' element={<Catalog />}/>
-              <Route path='about' element={<About />}/>
-              <Route path='contacts' element={<Contacts />}/>
-              <Route path='*' element={<Page404 />} />
+                <Route path='catalog' element={<Catalog />} />
+                <Route path='catalog/:id' element={<Product />} />
+                <Route path='about' element={<About />}/>
+                <Route path='contacts' element={<Contacts />}/>
+                <Route path='*' element={<Page404 />} />
             </Route>
           </Routes>
           <Footer></Footer>

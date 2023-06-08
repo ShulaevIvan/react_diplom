@@ -3,14 +3,24 @@ import CatalogFilter from "../catalogFilter/CatalogFilter";
 import { Context } from "../../Context";
 import { useContext } from "react";
 import { useLocation } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import Preloader from "../preloader/Preloader";
 
 const Catalog = () => {
   const context = useContext(Context);
   const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const catEqual = arr => arr.every( v => v === arr[0])
+  const catEqual = arr => arr.every( v => v === arr[0]);
+
+  const cardViewHandler = (id) => {
+    context.setState(prevState => ({
+      ...prevState,
+      cardView: prevState.cardView = {...prevState.cardView, cardId: id},
+    }));
+    navigate(`/catalog/${id}`)
+  }
 
   const searchInputHandler = () => {
     context.setState(prevState => ({
@@ -44,8 +54,10 @@ const Catalog = () => {
         ...prevState,
         showMoreGoodsBtn: data.length < 6 ? prevState.showMoreGoodsBtn = false : prevState.showMoreGoodsBtn = true,
         activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: Number(prevState.activeCategory.page + data.length)},
-        goodsCategories: prevState.goodsCategories = [...prevState.goodsCategories, ...data]
-          .reduce((repArr, i) => !repArr.some(j => JSON.stringify(i) === JSON.stringify(j)) ? [...repArr, i] : repArr, [])
+        goodsCategories: prevState.goodsCategories.length === [] ?
+         prevState.goodsCategories = [...prevState.goodsCategories, ...data] :
+            prevState.goodsCategories = [...prevState.goodsCategories, ...data]
+              .reduce((repArr, i) => !repArr.some(j => JSON.stringify(i) === JSON.stringify(j)) ? [...repArr, i] : repArr, []),
       }));
       setLoading(false);
     })
@@ -63,7 +75,6 @@ const Catalog = () => {
             const resultCat = [];
 
             data.forEach((item) => {
-              console.log(item)
               resultCat.push(item.category)
               catId = item.category;
             });
@@ -109,7 +120,7 @@ const Catalog = () => {
           </form>
           <CatalogFilter />
           <div className="row">
-            {!context.state.searchHeader.searchCatalog.length > 0 ? context.state.goodsCategories.map((good) => {
+            {context.state.goodsCategories.map((good) => {
               return (
                 <div className="col-4" key={Math.random() + good.id}>
                   <div className="card catalog-item-card">
@@ -117,20 +128,8 @@ const Catalog = () => {
                       <div className="card-body">
                         <p className="card-text">{good.title}</p>
                         <p className="card-text">{good.price}</p>
-                        <a href="/products/1.html" className="btn btn-outline-primary">Заказать</a>
-                      </div>
-                    </div>
-                  </div>
-                );
-            }) : context.state.searchHeader.searchCatalog.map((good) => {
-              return (
-                <div className="col-4" key={Math.random() + good.id}>
-                  <div className="card catalog-item-card">
-                      <img src={good.images[0] ? good.images[0] : good.images[1]} className="card-img-top img-fluid" alt={good.title} />
-                      <div className="card-body">
-                        <p className="card-text">{good.title}</p>
-                        <p className="card-text">{good.price}</p>
-                        <a href="/products/1.html" className="btn btn-outline-primary">Заказать</a>
+                        <a className="btn btn-outline-primary" onClick={() => cardViewHandler(good.id)}>Заказать</a>
+                        {/* <a href={`/catalog/${good.id}`} className="btn btn-outline-primary" onClick={() => cardViewHandler(good.id)}>Заказать</a> */}
                       </div>
                     </div>
                   </div>

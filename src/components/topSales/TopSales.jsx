@@ -61,7 +61,7 @@ const TopSales = () => {
                                     <div className="card-body">
                                         <p className="card-text">{good.title}</p>
                                         <p className="card-text">{good.price}</p>
-                                        <a href="/products/1.html" className="btn btn-outline-primary">Заказать</a>
+                                        <a href={`/catalog/${good.id}`} className="btn btn-outline-primary">Заказать</a>
                                     </div>
                                 </div>
                             </div>
