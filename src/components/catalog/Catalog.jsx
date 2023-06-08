@@ -45,9 +45,7 @@ const Catalog = () => {
         showMoreGoodsBtn: data.length < 6 ? prevState.showMoreGoodsBtn = false : prevState.showMoreGoodsBtn = true,
         activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: Number(prevState.activeCategory.page + data.length)},
         goodsCategories: prevState.goodsCategories = [...prevState.goodsCategories, ...data]
-          .reduce((result, item) => {
-            return result.includes(item) ? result : [...result, item]
-          }, []),
+          .reduce((repArr, i) => !repArr.some(j => JSON.stringify(i) === JSON.stringify(j)) ? [...repArr, i] : repArr, [])
       }));
       setLoading(false);
     })
@@ -61,25 +59,33 @@ const Catalog = () => {
           .then(response => response.json())
           .then((data) => {
             let catIndex = undefined;
+            let catId = undefined;
             const resultCat = [];
-            data.forEach((item) => resultCat.push(item.category));
+
+            data.forEach((item) => {
+              console.log(item)
+              resultCat.push(item.category)
+              catId = item.category;
+            });
             const testEqual = catEqual(resultCat);
+
             if (testEqual) {
-              const targetCat = context.state.categories.find(x => x.id === resultCat[0])
-              catIndex = context.state.categories.indexOf(targetCat)
+              const targetCat = context.state.categories.find(x => x.id === resultCat[0]);
+              catIndex = context.state.categories.indexOf(targetCat);
             }
             context.setState(prevState => ({
               ...prevState,
               searchHeader: {
                 ...prevState.searchHeader,
-                goodsCategories:  prevState.goodsCategories = data,
+                showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
                 catalogFilter: testEqual ? 
                   prevState.catalogFilter = {...prevState.catalogFilter, isActive: catIndex} : 
                     prevState.catalogFilter = {...prevState.catalogFilter, isActive: 0},
                 activeCategory: testEqual ? 
-                  prevState.activeCategory = {category: catIndex, page: 0} : 
+                  prevState.activeCategory = {category: catId, page: 0} : 
                     prevState.activeCategory = {category: 0, page: 0},
-              }
+                goodsCategories: prevState.goodsCategories = [...data],
+              },
             }));
           })
       }
