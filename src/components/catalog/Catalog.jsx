@@ -70,6 +70,7 @@ const Catalog = () => {
         await fetch(` http://localhost:7070/api/items?q=${context.state.searchHeader.searchPanelCatalog.current.value}`)
           .then(response => response.json())
           .then((data) => {
+            console.log(data)
             let catIndex = undefined;
             let catId = undefined;
             const resultCat = [];
@@ -84,20 +85,22 @@ const Catalog = () => {
               const targetCat = context.state.categories.find(x => x.id === resultCat[0]);
               catIndex = context.state.categories.indexOf(targetCat);
             }
-            context.setState(prevState => ({
-              ...prevState,
-              searchHeader: {
-                ...prevState.searchHeader,
-                showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
-                catalogFilter: testEqual ? 
-                  prevState.catalogFilter = {...prevState.catalogFilter, isActive: catIndex} : 
-                    prevState.catalogFilter = {...prevState.catalogFilter, isActive: 0},
-                activeCategory: testEqual ? 
-                  prevState.activeCategory = {category: catId, page: 0} : 
-                    prevState.activeCategory = {category: 0, page: 0},
-                goodsCategories: prevState.goodsCategories = [...data],
-              },
-            }));
+            setTimeout(() => {
+              context.setState(prevState => ({
+                ...prevState,
+                searchHeader: {
+                  ...prevState.searchHeader,
+                  showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
+                  goodsCategories: prevState.goodsCategories = [...data],
+                  catalogFilter: testEqual ? 
+                    prevState.catalogFilter = {...prevState.catalogFilter, isActive: catIndex} : 
+                      prevState.catalogFilter = {...prevState.catalogFilter, isActive: 0},
+                  activeCategory: testEqual ? 
+                    prevState.activeCategory = {category: catId, page: 0} : 
+                      prevState.activeCategory = {category: 0, page: 0},
+                },
+              }));
+            }, 100);
           })
       }
       fetchFunc();

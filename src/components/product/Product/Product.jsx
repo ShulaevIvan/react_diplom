@@ -5,6 +5,28 @@ import { useEffect } from "react";
 
 const Product = () => {
     const context = useContext(Context);
+    const sizeSelectHandler = (index) => {
+        if (!context.state.cardView.sizeActive) {
+            context.setState(prevState => ({
+                ...prevState,
+                cardView: prevState.cardView = {
+                    ...prevState.cardView, 
+                    sizeActive: prevState.sizeActive = true,
+                    cartBtnActive:  prevState.cartBtnActive = index,
+                }
+            }));
+            return;
+        }
+        context.setState(prevState => ({
+            ...prevState,
+            cardView: prevState.cardView = {
+                ...prevState.cardView, 
+                sizeActive: prevState.sizeActive = false,
+                cartBtnActive:  prevState.cartBtnActive = index,
+            }
+        }));
+    };
+
 
 
     useEffect(() => {
@@ -28,9 +50,10 @@ const Product = () => {
                     <h2 className="text-center">{context.state.cardView.cardData ? context.state.cardView.cardData.title : null}</h2>
                     <div className="row">
                         <div className="col-5">
-                            {context.state.cardView.cardData ? context.state.cardView.cardData.images.map((path) => {
-                                return <img key={path} src={context.state.cardView.cardData ? path : null} className="img-fluid" alt={context.state.cardView.cardData ? context.state.cardView.cardData.title : null} />
-                            }) : null}
+                        <img 
+                            src={context.state.cardView.cardData ? context.state.cardView.cardData.images[0] : null} 
+                            className="img-fluid" alt={context.state.cardView.cardData ? context.state.cardView.cardData.title : null} 
+                        />
                         </div>
                         <div className="col-7">
                             <table className="table table-bordered">
@@ -63,13 +86,14 @@ const Product = () => {
                             </table>
                             <div className="text-center">
                                 <p>Размеры в наличии:
-                                    {context.state.cardView.cardData ? context.state.cardView.cardData.sizes.map((item) => {
-                                        console.log(item)
+                                    {context.state.cardView.cardData ? context.state.cardView.cardData.sizes.map((item, i) => {
                                         if (item.available) {
                                             return (
-                                                <React.Fragment>
-                                                    {/* <span className="catalog-item-size selected">{item.size}</span>  */}
-                                                    <span className="catalog-item-size">{item.size}</span>
+                                                <React.Fragment key={i}>
+                                                    <span 
+                                                        className = {context.state.cardView.sizeActive ? "catalog-item-size selected" : "catalog-item-size"} 
+                                                        onClick={() => sizeSelectHandler(i)}>{item.size} 
+                                                    </span>
                                                 </React.Fragment>
                                             );
                                         }

@@ -34,7 +34,12 @@ function App() {
       linkRefs: useRef([]),
       isActive: 0,
     },
-    cardView: {cardId: undefined, cardData: undefined},
+    cardView: { 
+      cardId: undefined, 
+      cardData: undefined,
+      sizeActive: undefined,
+      cartBtnActive: false,
+    },
     userCart: {},
   }
   const [appState, setAppState] = useState(initialState);
