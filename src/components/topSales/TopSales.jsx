@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Context } from '../../Context';
 import { useContext } from "react";
 import { useEffect } from "react";
@@ -8,7 +9,18 @@ import Preloader from "../preloader/Preloader";
 
 const TopSales = () => {
     const context = useContext(Context);
-    const [loading, setLoading] = useState(null)
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(null);
+
+    const cardViewHandler = (id) => {
+        context.setState(prevState => ({
+          ...prevState,
+          cardView: prevState.cardView = {...prevState.cardView, cardId: id},
+        }));
+        navigate(`/catalog/${id}`)
+    }
+
+
     useEffect(() => {
         setLoading(true);
         const fetchFunc = async () => {
@@ -61,7 +73,7 @@ const TopSales = () => {
                                     <div className="card-body">
                                         <p className="card-text">{good.title}</p>
                                         <p className="card-text">{good.price}</p>
-                                        <a href={`/catalog/${good.id}`} className="btn btn-outline-primary">Заказать</a>
+                                        <a onClick={() => cardViewHandler(good.id)} className="btn btn-outline-primary">Заказать</a>
                                     </div>
                                 </div>
                             </div>

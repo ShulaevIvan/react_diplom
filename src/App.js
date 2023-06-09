@@ -38,9 +38,14 @@ function App() {
       cardId: undefined, 
       cardData: undefined,
       sizeActive: undefined,
+      sizeBtnIndex: undefined,
       cartBtnActive: false,
     },
-    userCart: {},
+    userCart: {
+      productId: undefined,
+      productData: undefined,
+      productCount: useRef(null),
+    },
   }
   const [appState, setAppState] = useState(initialState);
 

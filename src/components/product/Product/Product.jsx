@@ -5,14 +5,26 @@ import { useEffect } from "react";
 
 const Product = () => {
     const context = useContext(Context);
+
+    const incimentProductHandler = (value) => {
+        const baseValue = context.state.userCart.productCount.current.textContent
+        context.state.userCart.productCount.current.textContent = Number(baseValue) + 1;
+    }
+
+    const decrimentProductHandler = () => {
+        const baseValue = context.state.userCart.productCount.current.textContent;
+        if (baseValue > 0) context.state.userCart.productCount.current.textContent = Number(baseValue) - 1;
+    }
+
     const sizeSelectHandler = (index) => {
         if (!context.state.cardView.sizeActive) {
             context.setState(prevState => ({
                 ...prevState,
                 cardView: prevState.cardView = {
                     ...prevState.cardView, 
-                    sizeActive: prevState.sizeActive = true,
-                    cartBtnActive:  prevState.cartBtnActive = index,
+                    sizeBtnIndex: prevState.cardView.sizeBtnIndex = index,
+                    sizeActive: prevState.cardView.sizeActive = true,
+                    cartBtnActive: prevState.cardView.cartBtnActive = true,
                 }
             }));
             return;
@@ -21,15 +33,15 @@ const Product = () => {
             ...prevState,
             cardView: prevState.cardView = {
                 ...prevState.cardView, 
-                sizeActive: prevState.sizeActive = false,
-                cartBtnActive:  prevState.cartBtnActive = index,
+                sizeBtnIndex: prevState.cardView.sizeBtnIndex = index,
+                sizeActive: prevState.cardView.sizeActive = false,
+                cartBtnActive:  prevState.cardView.cartBtnActive = false,
             }
         }));
     };
 
-
-
     useEffect(() => {
+        context.state.userCart.productCount.current.textContent = 0;
         const fetchGood = async () => {
             await fetch(`http://localhost:7070/api/items/${context.state.cardView.cardId}`)
             .then((response) => response.json())
@@ -102,13 +114,14 @@ const Product = () => {
                                 </p>
                                 {/* <p>Размеры в наличии: <span className="catalog-item-size selected">18 US</span> <span className="catalog-item-size">20 US</span></p> */}
                                 <p>Количество: <span className="btn-group btn-group-sm pl-2">
-                                        <button className="btn btn-secondary">-</button>
-                                        <span className="btn btn-outline-primary">1</span>
-                                        <button className="btn btn-secondary">+</button>
+                                        <button className="btn btn-secondary" onClick={() => decrimentProductHandler(1)}>-</button>
+                                        <span className="btn btn-outline-primary"  ref={context.state.userCart.productCount}></span>
+                                        <button className="btn btn-secondary" onClick={() => incimentProductHandler(1)}>+</button>
                                     </span>
                                 </p>
                             </div>
-                            <button className="btn btn-danger btn-block btn-lg">В корзину</button>
+                          
+                            <button className="btn btn-danger btn-block btn-lg" disabled = {!context.state.cardView.cartBtnActive}>В корзину</button>
                         </div>
                     </div>
                 </section>
