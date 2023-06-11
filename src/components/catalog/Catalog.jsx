@@ -70,7 +70,6 @@ const Catalog = () => {
         await fetch(` http://localhost:7070/api/items?q=${context.state.searchHeader.searchPanelCatalog.current.value}`)
           .then(response => response.json())
           .then((data) => {
-            console.log(data)
             let catIndex = undefined;
             let catId = undefined;
             const resultCat = [];
