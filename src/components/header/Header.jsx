@@ -1,6 +1,6 @@
 import React from "react";
 import logo from '../../img/header-logo.png'
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { Context } from "../../Context";
 import { useContext } from "react";
 import { useState } from "react"
@@ -43,6 +43,7 @@ const Header = () => {
             }));
             return;
         }
+        
         context.setState(prevState => ({
             ...prevState,
             searchHeader: {
@@ -82,10 +83,11 @@ const Header = () => {
                         <div className="header-controls-pics">
                             <div data-id="search-expander" className="header-controls-pic header-controls-search" onClick={searchIconHandler}></div>
                              {/* <!-- Do programmatic navigation on click to /cart.html --> */}
-                            <div className="header-controls-pic header-controls-cart">
-                                <div className="header-controls-cart-full">1</div>
+                            <Link className="header-controls-pic header-controls-cart" to={'/cart'}>
+                                {context.state.userCart.cartData.length > 0 ?  <div className="header-controls-cart-full">{context.state.userCart.cartData.length}</div> : null}
+                                {/* <div className="header-controls-cart-full">1</div> */}
                                 <div className="header-controls-cart-menu"></div>
-                            </div>
+                            </Link>
                         </div>
                         <form  data-id="search-form" 
                         className={`header-controls-search-form form-inline ${context.state.searchHeader.searchPanelShow ? null : 'invisible'}`}>

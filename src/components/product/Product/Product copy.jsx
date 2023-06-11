@@ -2,11 +2,9 @@ import React from "react";
 import { Context } from "../../../Context";
 import { useContext } from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const Product = () => {
     const context = useContext(Context);
-    const navigate = useNavigate();
 
     const incimentProductHandler = () => {
         const baseValue = context.state.userCart.productCount.current.textContent;
@@ -18,11 +16,10 @@ const Product = () => {
         if (baseValue > 0) context.state.userCart.productCount.current.textContent = Number(baseValue) - 1;
     };
 
-
-
     const addToCartHandler = () => {
+        console.log(context.state.userCart.productCount.current.textContent)
         if (Number(context.state.userCart.productCount.current.textContent) <= 0) return;
-
+        const checkCart = context.state.userCart.cartData.find((item) => item.goodId === context.state.cardView.cardId);
         const goodObj = {
             goodId: context.state.cardView.cardId,
             goodName: context.state.cardView.cardData.title,
@@ -31,33 +28,36 @@ const Product = () => {
             price: context.state.cardView.cardData.price,
         }
 
-        context.setState(prevState => ({
-            ...prevState,
-            userCart: {
-                ...prevState.userCart,
-                cartData: prevState.userCart.cartData.find(item => item.goodId === goodObj.goodId) ? prevState.userCart.cartData.map((item) => {
-                    if (item.goodId === goodObj.goodId) {
-                        return {
-                            ...item,
-                            qnt: Number(item.qnt) + goodObj.qnt
+        if (checkCart) {
+            const goodIndex = context.state.userCart.cartData.findIndex(item => {return item.goodId === goodObj.goodId;});
+            context.setState(prevState => ({
+                ...prevState,
+                userCart: {
+                    ...prevState.userCart,
+                    cartData: [...prevState.userCart.cartData].map((item) => {
+                        if (item.goodId === goodObj.goodId) {
+                            item.qnt = item.qnt + Number(prevState.userCart.productCount.current.textContent);
                         }
-                    }
-                }) 
-                :[...prevState.userCart.cartData, goodObj]
-            }
-        }));
+                        return  {...item}
+                    })
+                }
+            }));
+            console.log(context.state.userCart.cartData)
+            return
+        }
 
         context.setState(prevState => ({
             ...prevState,
             userCart: {
                 ...prevState.userCart,
-                cartSumm: prevState.userCart.cartSumm = prevState.userCart.cartData.reduce(function (acc, obj) { return acc + (obj.price * obj.qnt); }, 0)
+                cartData: [...prevState.userCart.cartData, goodObj]
             }
         }));
 
-        navigate('/cart');
-
+        console.log(context.state.userCart.cartData)
     };
+
+
 
     const sizeSelectHandler = (index, sizeName) => {
         if (!context.state.cardView.sizeActive) {
@@ -97,9 +97,7 @@ const Product = () => {
             });
         }
         fetchGood();
-        
     }, []);
-
 
     return (
         <React.Fragment>

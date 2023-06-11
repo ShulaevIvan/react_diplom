@@ -12,6 +12,7 @@ import About from './components/about/About';
 import Contacts from './components/contacts/Contacts';
 import Page404 from './components/page404/Page404';
 import Product from './components/product/Product/Product';
+import Cart from './components/cart/Cart';
 
 function App() {
   const initialState = {
@@ -39,11 +40,13 @@ function App() {
       cardData: undefined,
       sizeActive: undefined,
       sizeBtnIndex: undefined,
+      sizeName: undefined,
       cartBtnActive: false,
     },
     userCart: {
       productId: undefined,
-      productData: undefined,
+      cartData: [],
+      cartSumm: 0,
       productCount: useRef(null),
     },
   }
@@ -59,6 +62,7 @@ function App() {
               <Route path='/' />
                 <Route path='catalog' element={<Catalog />} />
                 <Route path='catalog/:id' element={<Product />} />
+                <Route path='cart' element={<Cart />} />
                 <Route path='about' element={<About />}/>
                 <Route path='contacts' element={<Contacts />}/>
                 <Route path='*' element={<Page404 />} />
