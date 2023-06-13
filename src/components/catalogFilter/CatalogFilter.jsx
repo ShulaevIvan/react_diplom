@@ -55,10 +55,12 @@ const CatalogFilter = () => {
                 })
                 .then((response) => response.json())
                 .then((data) => {
+                    console.log(context.state.activeCategory.category)
                     context.setState(prevState => ({
                         ...prevState,
                         activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: data.length},
-                        goodsCategories: prevState.goodsCategories = [...data],
+                        goodsCategories: prevState.activeCategory.category === 0 ? 
+                            prevState.goodsCategories = [...data].sort(() => Math.random() - 0.5): prevState.goodsCategories = [...data],
                     }));
                     setLoading(false);
                 });

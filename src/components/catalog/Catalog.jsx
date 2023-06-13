@@ -59,6 +59,12 @@ const Catalog = () => {
             prevState.goodsCategories = [...prevState.goodsCategories, ...data]
               .reduce((repArr, i) => !repArr.some(j => JSON.stringify(i) === JSON.stringify(j)) ? [...repArr, i] : repArr, []),
       }));
+      context.setState(prevState => ({
+        ...prevState,
+        goodsCategories: 
+          prevState.activeCategory.category === 0 ? 
+            prevState.goodsCategories.sort(() => Math.random() - 0.5) : prevState.goodsCategories,
+      }));
       setLoading(false);
     })
   };
