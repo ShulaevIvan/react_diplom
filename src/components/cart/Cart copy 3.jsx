@@ -7,10 +7,7 @@ import Popup from "../popup/Popup";
 const Cart = () => {
     const context = useContext(Context);
     const storage = JSON.parse(localStorage.getItem('userCart'));
-    let storageSumm = Number(JSON.parse(localStorage.getItem('userCartSumm')));
-
     const rmPositionHandler = (id) => {
-        let newSumm = 0;
         context.setState(prevState => ({
             ...prevState,
             userCart: prevState.userCart = {
@@ -18,25 +15,6 @@ const Cart = () => {
                 cartData: prevState.userCart.cartData.filter((item) => item.goodId !== id),
             }
         }));
-
-        context.state.userCart.cartData.forEach((item) => {
-            if (item.goodId === id) newSumm -= item.qnt * item.price;
-            newSumm += (item.qnt * item.price);
-        });
-        
-        if (newSumm !== context.state.userCart.cartSumm) {
-            context.setState(prevState => ({
-                ...prevState,
-                userCart: prevState.userCart = {
-                    ...prevState.userCart,
-                    cartSumm: prevState.cartSumm = newSumm,
-                }
-            }));
-            localStorage.setItem('userCartSumm', JSON.stringify(newSumm));
-        }
-        
-        if (storage.length > 0) localStorage.setItem('userCart', JSON.stringify(storage.filter((item) => item.goodId !== id)));
-        
     };
 
     useEffect(()=> {
@@ -50,8 +28,7 @@ const Cart = () => {
             }));
         }
       }, []);
-    
-    
+
     return (
         <React.Fragment>
             <section className="cart">
@@ -69,20 +46,7 @@ const Cart = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {storage && storage.length > 0 ? storage.map((good, i) => {
-                            return  (
-                                <tr key={good.goodId ? good.goodId : i}>
-                                    <td scope="row">1</td>
-                                    <td><a href={`/catalog/${good.goodId}`}>{good.goodName}</a></td>
-                                    <td>{good.size}</td>
-                                    <td>{good.qnt}</td>
-                                    <td>{good.price}руб.</td>
-                                    <td>{good.price * good.qnt} руб.</td>
-                                    <td><button className="btn btn-outline-danger btn-sm" onClick={() => rmPositionHandler(good.goodId)}>Удалить</button></td>
-                                </tr>
-                            );
-                        }) : 
-                        context.state.userCart.cartData.map((good, i) => {
+                        {context.state.userCart.cartData.map((good, i) => {
                             return (
                                 <tr key={good.goodId ? good.goodId : i}>
                                     <td scope="row">1</td>
@@ -94,20 +58,12 @@ const Cart = () => {
                                     <td><button className="btn btn-outline-danger btn-sm" onClick={() => rmPositionHandler(good.goodId)}>Удалить</button></td>
                                 </tr>
                             );
-                        })
-                        }
-                        {storageSumm ? 
-                            <tr>
-                                <td colSpan="5" className="text-right">Общая стоимость</td>
-                                <td>{storageSumm > 0 ? storageSumm : 0} руб.</td>
-                            </tr>
-                        : 
+                        })}
+    
                         <tr>
                             <td colSpan="5" className="text-right">Общая стоимость</td>
                             <td>{context.state.userCart.cartData.length > 0 ? context.state.userCart.cartSumm : 0} руб.</td>
                         </tr>
-                        }
-                        
                     </tbody>
                 </table>
             </section>

@@ -48,6 +48,7 @@ function App() {
       cartData: [],
       cartSumm: 0,
       productCount: useRef(null),
+      orderReady: false,
     },
   }
   const [appState, setAppState] = useState(initialState);

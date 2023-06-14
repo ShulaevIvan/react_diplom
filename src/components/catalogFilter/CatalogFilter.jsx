@@ -26,6 +26,7 @@ const CatalogFilter = () => {
                 showMoreGoodsBtn: prevState.showMoreGoodsBtn = true,
             }));
         }
+        
         context.setState(prevState => ({
             ...prevState,
             catalogFilter: prevState.CatalogFilter = {...prevState.catalogFilter, isActive: prevState.isActive = index}
@@ -37,9 +38,10 @@ const CatalogFilter = () => {
             ...prevState,
             activeCategory: {
                 ...prevState.activeCategory,
-                category: prevState.category = 0,
+                category: prevState.activeCategory.category = 0,
             }
         }));
+
     }, []);
 
 
@@ -55,7 +57,6 @@ const CatalogFilter = () => {
                 })
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log(context.state.activeCategory.category)
                     context.setState(prevState => ({
                         ...prevState,
                         activeCategory: prevState.activeCategory = {...prevState.activeCategory, page: data.length},

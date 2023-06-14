@@ -8,18 +8,19 @@ import Preloader from "../preloader/Preloader";
 
 const Catalog = () => {
   const context = useContext(Context);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
 
   const catEqual = arr => arr.every( v => v === arr[0]);
 
   const cardViewHandler = (id) => {
+    localStorage.setItem('currentCardId', id);
     context.setState(prevState => ({
       ...prevState,
       cardView: prevState.cardView = {...prevState.cardView, cardId: id},
     }));
-    navigate(`/catalog/${id}`)
+    navigate(`/catalog/${id}`);
   }
 
   const searchInputHandler = () => {
@@ -87,7 +88,7 @@ const Catalog = () => {
             const testEqual = catEqual(resultCat);
 
             if (testEqual) {
-              const targetCat = context.state.categories.find(x => x.id === resultCat[0]);
+              const targetCat = context.state.categories.find(item => item.id === resultCat[0]);
               catIndex = context.state.categories.indexOf(targetCat);
             }
             setTimeout(() => {
@@ -110,7 +111,7 @@ const Catalog = () => {
       }
       fetchFunc();
     }
-    
+    // eslint-disable-next-line
   }, [context.state.searchHeader.searchStr]);
 
   return (
@@ -119,7 +120,7 @@ const Catalog = () => {
           <h2 className="text-center">Каталог</h2>
           <form className={location.pathname === '/catalog' ? 'catalog-search-form form-inline': 'catalog-search-form form-inline search-hidden'}>
             <input 
-            ref={context.state.searchHeader.searchPanelCatalog} 
+            ref={context.state.searchHeader.searchPanelCatalog}
             className="form-control" 
             placeholder="Поиск" 
             onChange={searchInputHandler}
@@ -128,20 +129,24 @@ const Catalog = () => {
           </form>
           <CatalogFilter />
           <div className="row">
-            {context.state.goodsCategories.map((good) => {
+            {context.state.goodsCategories.map((good, i) => {
               return (
+                <React.Fragment key={Math.random() + i}>
+                { loading ? <Preloader /> : 
                 <div className="col-4" key={Math.random() + good.id}>
                   <div className="card catalog-item-card">
                       <img src={good.images[0] ? good.images[0] : good.images[1]} className="card-img-top img-fluid" alt={good.title} />
                       <div className="card-body">
                         <p className="card-text">{good.title}</p>
                         <p className="card-text">{good.price}</p>
+                        {/* eslint-disable-next-line */}
                         <a className="btn btn-outline-primary" onClick={() => cardViewHandler(good.id)}>Заказать</a>
-                        {/* <a href={`/catalog/${good.id}`} className="btn btn-outline-primary" onClick={() => cardViewHandler(good.id)}>Заказать</a> */}
                       </div>
                     </div>
-                  </div>
-                );
+                </div>
+                }
+                </React.Fragment>
+              );
             })}
           </div>
           <div className="text-center">

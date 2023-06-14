@@ -76,7 +76,7 @@ const Order = () => {
         userCart: {
           ...prevState.userCart,
           cartData: prevState.userCart.cartData = [],
-          cartSumm: prevState.userCart.cartSumm = 0
+          cartSumm: prevState.userCart.cartSumm = 0,
         }
       }));
 
@@ -93,9 +93,18 @@ const Order = () => {
       fetchFunc();
       order.phoneRef.current.value = '';
       order.addressRef.current.value = '';
-
+      localStorage.removeItem('userCart');
+      localStorage.removeItem('userCartSumm');
+      context.setState(prevState => ({
+        ...prevState,
+        userCart: {
+          ...prevState.userCart,
+          orderReady: prevState.userCart.orderReady = true
+        },
+      }));
     }
-  }, [order.orderValid])
+  }, [order.orderValid]);
+
 
     return (
         <section className="order">
