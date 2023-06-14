@@ -17,7 +17,7 @@ const Cart = () => {
             ...prevState,
             userCart: prevState.userCart = {
                 ...prevState.userCart,
-                cartData: prevState.userCart.cartData.filter((item) => [id].includes(item.goodId) && item.size !== size),
+                cartData: prevState.userCart.cartData.filter((item) => item.goodId !== id && item.size !== size),
             }
         }));
 
@@ -37,7 +37,7 @@ const Cart = () => {
             localStorage.setItem('userCartSumm', JSON.stringify(newSumm));
         }
         
-        if (storage.length > 0) localStorage.setItem('userCart', JSON.stringify(storage.filter((item) => [id].includes(item.goodId) && item.size !== size)));
+        if (storage.length > 0) localStorage.setItem('userCart', JSON.stringify(storage.filter((item) => item.goodId !== id && item.size !== size)));
         
     };
 
