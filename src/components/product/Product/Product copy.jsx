@@ -22,7 +22,6 @@ const Product = () => {
 
     const addToCartHandler = async () => {
         if (Number(context.state.userCart.productCount.current.textContent) <= 0) return;
-        console.log(context.state.userCart.cartData)
         const goodObj = {
             goodId: context.state.cardView.cardId,
             goodName: context.state.cardView.cardData.title,
@@ -30,7 +29,7 @@ const Product = () => {
             size: context.state.cardView.sizeName,
             price: context.state.cardView.cardData.price,
         };
- 
+
         context.setState(prevState => ({
             ...prevState,
             userCart: {

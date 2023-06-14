@@ -23,7 +23,7 @@ const Cart = () => {
             if (item.goodId === id) newSumm -= item.qnt * item.price;
             newSumm += (item.qnt * item.price);
         });
-        
+
         if (newSumm !== context.state.userCart.cartSumm) {
             context.setState(prevState => ({
                 ...prevState,
@@ -71,7 +71,7 @@ const Cart = () => {
                     <tbody>
                         {storage && storage.length > 0 ? storage.map((good, i) => {
                             return  (
-                                <tr key={good.goodId ? good.goodId : i}>
+                                <tr key={good.goodId ? Math.random() * 1000 : i}>
                                     <td scope="row">1</td>
                                     <td><a href={`/catalog/${good.goodId}`}>{good.goodName}</a></td>
                                     <td>{good.size}</td>
@@ -84,7 +84,7 @@ const Cart = () => {
                         }) : 
                         context.state.userCart.cartData.map((good, i) => {
                             return (
-                                <tr key={good.goodId ? good.goodId : i}>
+                                <tr key={good.goodId ? Math.random() * 1000 : i}>
                                     <td scope="row">1</td>
                                     <td><a href={`/catalog/${good.goodId}`}>{good.goodName}</a></td>
                                     <td>{good.size}</td>

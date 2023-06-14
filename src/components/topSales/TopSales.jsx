@@ -57,7 +57,7 @@ const TopSales = () => {
             <div className="row">
                 {context.state.topSalesGoods.map((good) => {
                     return (
-                        <React.Fragment key={good.id}>
+                        <React.Fragment key={good.id + Math.random() * 10000}>
                             {loading ? <Preloader /> : 
                                 <div className="col-4" key={good.id}>
                                     <div className="card catalog-item-card">

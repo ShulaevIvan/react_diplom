@@ -22,12 +22,19 @@ const Product = () => {
 
     const addToCartHandler = async () => {
         if (Number(context.state.userCart.productCount.current.textContent) <= 0) return;
-        console.log(context.state.userCart.cartData)
+        let targetSize = undefined;
+        context.state.cardView.cardData.sizes.forEach((item) => {
+            if (item.size === context.state.cardView.sizeName) {
+                targetSize = item.size;
+            }
+        })
+        // console.log(context.state.userCart.cartData.find((item) => context.state.cardView.cardId === item.id && context.state.cardView.sizeName === item.size))
+        console.log(targetSize)
         const goodObj = {
             goodId: context.state.cardView.cardId,
             goodName: context.state.cardView.cardData.title,
             qnt: Number(context.state.userCart.productCount.current.textContent),
-            size: context.state.cardView.sizeName,
+            size: targetSize,
             price: context.state.cardView.cardData.price,
         };
  
@@ -35,8 +42,8 @@ const Product = () => {
             ...prevState,
             userCart: {
                 ...prevState.userCart,
-                cartData: prevState.userCart.cartData.find(item => item.goodId === goodObj.goodId) ? prevState.userCart.cartData.map((item) => {
-                    if (item.goodId === goodObj.goodId) {
+                cartData: prevState.userCart.cartData.find(item => item.goodId === goodObj.goodId && item.size === targetSize) ? prevState.userCart.cartData.map((item) => {
+                    if (item.goodId === goodObj.goodId && item.size === targetSize) {
                         return {
                             ...item,
                             qnt: Number(item.qnt) + goodObj.qnt
@@ -47,7 +54,7 @@ const Product = () => {
                 :[...prevState.userCart.cartData, goodObj],
             },
         }));
-    
+
         context.setState(prevState => ({
             ...prevState,
             userCart: {
@@ -164,7 +171,7 @@ const Product = () => {
                                     {context.state.cardView.cardData ? context.state.cardView.cardData.sizes.map((item, i) => {
                                         if (item.available) {
                                             return (
-                                                <React.Fragment key={i}>
+                                                <React.Fragment key={Math.random() * 10000}>
                                                     <span 
                                                         className = {
                                                             context.state.cardView.sizeActive 
