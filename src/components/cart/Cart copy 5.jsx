@@ -6,17 +6,19 @@ import Popup from "../popup/Popup";
 
 const Cart = () => {
     const context = useContext(Context);
-    let storage = JSON.parse(localStorage.getItem('userCart'));
-    let storageSumm = 0
+    const storage = JSON.parse(localStorage.getItem('userCart'));
+    let storageSumm = Number(JSON.parse(localStorage.getItem('userCartSumm')));
 
     const rmPositionHandler = (id, size, goodName) => {
+        console.log(size)
+        console.log(id)
         let newSumm = 0;
         context.setState(prevState => ({
             ...prevState,
             userCart: prevState.userCart = {
                 ...prevState.userCart,
-                cartData: prevState.userCart.cartData.filter((item) => item.size === size && item.goodId === id ? item.goodId !== id : item),
-            },
+                cartData: prevState.userCart.cartData.filter((item) => [id].includes(item.goodId) && item.size !== size && item.goodId !== id),
+            }
         }));
 
         context.state.userCart.cartData.forEach((item) => {
@@ -30,19 +32,18 @@ const Cart = () => {
                 userCart: prevState.userCart = {
                     ...prevState.userCart,
                     cartSumm: prevState.cartSumm = newSumm,
-                },
+                }
             }));
             localStorage.setItem('userCartSumm', JSON.stringify(newSumm));
         }
         
-        const newStorage = JSON.parse(localStorage.getItem('userCart')).filter((item) => item.size === size && item.goodId === id ? item.goodId !== id : item);
-        localStorage.setItem('userCart', JSON.stringify(newStorage));
+        if (storage.length > 0) localStorage.setItem('userCart', JSON.stringify(storage.filter((item) => [id].includes(item.goodId) && item.size !== size && item.goodName === goodName)));
         
     };
 
     useEffect(() => {
-        storageSumm = Number(JSON.parse(localStorage.getItem('userCartSumm')));
-    });
+        console.log(context.state.userCart.cartData)
+    }, [])
 
     useEffect(()=> {
         return () => {
@@ -53,7 +54,7 @@ const Cart = () => {
                   orderReady: prevState.userCart.orderReady = false,
                 },
             }));
-        };
+        }
       }, []);
     
     
@@ -74,8 +75,7 @@ const Cart = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {
-                        storage && storage.length > 0 ? storage.map((good, i) => {
+                        {storage && storage.length > 0 ? storage.map((good, i) => {
                             return  (
                                 <tr key={good.goodId ? Math.random() * 1000 : i}>
                                     <td scope="row">1</td>
@@ -87,8 +87,7 @@ const Cart = () => {
                                     <td><button className="btn btn-outline-danger btn-sm" onClick={() => rmPositionHandler(good.goodId, good.size, good.goodName)}>Удалить</button></td>
                                 </tr>
                             );
-                        })
-                        : 
+                        }) : 
                         context.state.userCart.cartData.map((good, i) => {
                             return (
                                 <tr key={good.goodId ? Math.random() * 1000 : i}>
@@ -102,12 +101,18 @@ const Cart = () => {
                                 </tr>
                             );
                         })
-                    }
+                        }
+                        {storageSumm ? 
+                            <tr>
+                                <td colSpan="5" className="text-right">Общая стоимость</td>
+                                <td>{storageSumm > 0 ? storageSumm : 0} руб.</td>
+                            </tr>
+                        : 
                         <tr>
                             <td colSpan="5" className="text-right">Общая стоимость</td>
-                            <td>{storageSumm ? storageSumm : context.state.userCart.cartSumm} руб.</td>
+                            <td>{context.state.userCart.cartData.length > 0 ? context.state.userCart.cartSumm : 0} руб.</td>
                         </tr>
-                        
+                        }
                         
                     </tbody>
                 </table>

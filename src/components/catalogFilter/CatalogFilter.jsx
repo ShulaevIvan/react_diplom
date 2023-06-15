@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Context } from "../../Context";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
@@ -41,7 +41,7 @@ const CatalogFilter = () => {
                 category: prevState.activeCategory.category = 0,
             }
         }));
-
+    // eslint-disable-next-line
     }, []);
 
 
@@ -67,7 +67,7 @@ const CatalogFilter = () => {
                 });
             }
             fetchFunc();
-        
+    // eslint-disable-next-line
     }, [context.state.activeCategory.category])
 
     useEffect(() => {
@@ -92,7 +92,8 @@ const CatalogFilter = () => {
           });
         }
         fetchFunc();
-      }, []);
+    // eslint-disable-next-line
+    }, []);
 
     return (
         <React.Fragment>

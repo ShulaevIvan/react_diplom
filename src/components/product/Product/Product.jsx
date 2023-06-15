@@ -9,27 +9,32 @@ const Product = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const storageCardId = localStorage.getItem('currentCardId');
+    const storageProductCount = Number(localStorage.getItem('currentProductCount'));
 
     const incimentProductHandler = () => {
         const baseValue = context.state.userCart.productCount.current.textContent;
-        context.state.userCart.productCount.current.textContent = (Number(baseValue) + 1) > 10 ? 10 : Number(baseValue) + 1;
+        const newValue = context.state.userCart.productCount.current.textContent = (Number(baseValue) + 1) > 10 ? 10 : Number(baseValue) + 1;
+        localStorage.setItem('currentProductCount', newValue)
     };
 
     const decrimentProductHandler = () => {
         const baseValue = context.state.userCart.productCount.current.textContent;
-        if (baseValue > 0) context.state.userCart.productCount.current.textContent = Number(baseValue) - 1;
+        if (baseValue > 0) {
+            const newValue = context.state.userCart.productCount.current.textContent = Number(baseValue) - 1;
+            localStorage.setItem('currentProductCount', newValue);
+        }
     };
 
     const addToCartHandler = async () => {
         if (Number(context.state.userCart.productCount.current.textContent) <= 0) return;
         let targetSize = undefined;
+
         context.state.cardView.cardData.sizes.forEach((item) => {
             if (item.size === context.state.cardView.sizeName) {
                 targetSize = item.size;
             }
-        })
-        // console.log(context.state.userCart.cartData.find((item) => context.state.cardView.cardId === item.id && context.state.cardView.sizeName === item.size))
-        console.log(targetSize)
+        });
+
         const goodObj = {
             goodId: context.state.cardView.cardId,
             goodName: context.state.cardView.cardData.title,
@@ -42,26 +47,20 @@ const Product = () => {
             ...prevState,
             userCart: {
                 ...prevState.userCart,
-                cartData: prevState.userCart.cartData.find(item => item.goodId === goodObj.goodId && item.size === targetSize) ? prevState.userCart.cartData.map((item) => {
-                    if (item.goodId === goodObj.goodId && item.size === targetSize) {
-                        return {
-                            ...item,
-                            qnt: Number(item.qnt) + goodObj.qnt
+                cartData: prevState.userCart.cartData.find(item => item.goodId === goodObj.goodId && item.size === targetSize) ? 
+                    prevState.userCart.cartData.map((item) => {
+                        if (item.goodId === goodObj.goodId && item.size === targetSize) {
+                            return {
+                                ...item,
+                                qnt: Number(item.qnt) + goodObj.qnt
+                            };
                         }
-                    }
-                    return null;
-                }) 
+                        return null;
+                    }) 
                 :[...prevState.userCart.cartData, goodObj],
             },
         }));
 
-        context.setState(prevState => ({
-            ...prevState,
-            userCart: {
-                ...prevState.userCart,
-                cartSumm: prevState.userCart.cartSumm = prevState.userCart.cartData.reduce(function (acc, obj) { return acc + (obj.price * obj.qnt); }, 0)
-            },
-        }));
         setTimeout(() => {
            navigate('/cart');
         }, 100)
@@ -93,6 +92,7 @@ const Product = () => {
         }));
     };
 
+
     useEffect(() => {
         const fetchGood = async () => {
             setLoading(true);
@@ -109,7 +109,7 @@ const Product = () => {
                     },
                 }));
                 setLoading(false);
-                if (context.state.userCart.productCount.current) context.state.userCart.productCount.current.textContent = 0;
+                if (context.state.userCart.productCount.current) context.state.userCart.productCount.current.textContent = 1;
             });
         }
         fetchGood();
@@ -118,11 +118,32 @@ const Product = () => {
     }, []);
 
     useEffect(() => {
+        context.setState(prevState => ({
+            ...prevState,
+            userCart: {
+                ...prevState.userCart,
+                cartSumm: prevState.userCart.cartSumm = prevState.userCart.cartData.reduce(function (acc, obj) { return acc + (obj.price * obj.qnt); }, 0)
+            },
+        }));
+        
         if (context.state.userCart.cartData.length > 0) {
             localStorage.setItem('userCartSumm', JSON.stringify(context.state.userCart.cartSumm));
             localStorage.setItem('userCart', JSON.stringify(context.state.userCart.cartData));
-        } 
-    }, [context.state.userCart.cartData])
+        }
+        // eslint-disable-next-line
+    }, [context.state.userCart.cartData]);
+
+    useEffect(() => {
+        if (JSON.parse(localStorage.getItem('userCart'))  && JSON.parse(localStorage.getItem('userCart')).length >= context.state.userCart.cartData.length) {
+            context.setState(prevState => ({
+                ...prevState,
+                userCart: {
+                    ...prevState.userCart,
+                    cartData:[...JSON.parse(localStorage.getItem('userCart'))] ,
+                },
+            }));
+        }
+    }, []);
 
     return (
         <React.Fragment>
@@ -189,7 +210,9 @@ const Product = () => {
                                 </p>
                                 <p>Количество: <span className="btn-group btn-group-sm pl-2">
                                         <button className="btn btn-secondary" onClick={() => decrimentProductHandler(1)}>-</button>
-                                        <span className="btn btn-outline-primary"  ref={context.state.userCart.productCount}></span>
+                                        <span className="btn btn-outline-primary"  ref={context.state.userCart.productCount}>
+                                            {storageProductCount ? storageProductCount : null }
+                                            </span>
                                         <button className="btn btn-secondary" onClick={() => incimentProductHandler(1)}>+</button>
                                     </span>
                                 </p>

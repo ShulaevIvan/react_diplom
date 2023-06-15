@@ -84,9 +84,8 @@ const Header = () => {
                              {/* <!-- Do programmatic navigation on click to /cart.html --> */}
                             <Link className="header-controls-pic header-controls-cart" to={'/cart'}>
                                 {context.state.userCart.cartData.length > 0  ? 
-                                     <div className="header-controls-cart-full">{
-                                        context.state.userCart.cartData.length || 
-                                            JSON.parse(localStorage.getItem('userCart')).length}</div> : null}
+                                     <div className="header-controls-cart-full">{context.state.userCart.cartData.length}</div> :  
+                                     <div className="header-controls-cart-full">{JSON.parse(localStorage.getItem('userCart')) ? JSON.parse(localStorage.getItem('userCart')).length : null}</div>}
                                 <div className="header-controls-cart-menu"></div>
                             </Link>
                         </div>

@@ -1,9 +1,6 @@
-import logo from './logo.svg';
-import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Context } from './Context';
-import { useState } from 'react';
-import { useRef } from 'react'
+import { useState, useRef } from 'react';
 import Header from './components/header/Header';
 import HomePage from './components/homepage/Homepage';
 import Catalog from './components/catalog/Catalog';
@@ -13,6 +10,7 @@ import Contacts from './components/contacts/Contacts';
 import Page404 from './components/page404/Page404';
 import Product from './components/product/Product/Product';
 import Cart from './components/cart/Cart';
+import './App.css';
 
 function App() {
   const initialState = {
@@ -59,8 +57,7 @@ function App() {
         <BrowserRouter>
           <Header></Header>
           <Routes>
-            <Route  element={<HomePage />}>
-              <Route path='/' />
+            <Route path='/'  element={<HomePage />}>
                 <Route path='catalog' element={<Catalog />} />
                 <Route path='catalog/:id' element={<Product />} />
                 <Route path='cart' element={<Cart />} />
