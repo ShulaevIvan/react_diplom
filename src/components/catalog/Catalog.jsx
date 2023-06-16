@@ -11,7 +11,6 @@ const Catalog = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
   const catEqual = arr => arr.every( v => v === arr[0]);
 
   const cardViewHandler = (id) => {
@@ -19,9 +18,13 @@ const Catalog = () => {
     context.setState(prevState => ({
       ...prevState,
       cardView: prevState.cardView = {...prevState.cardView, cardId: id},
+      searchHeader: {
+        ...prevState.searchHeader,
+        searchStr: prevState.searchHeader.searchStr = '',
+      },
     }));
     navigate(`/catalog/${id}`);
-  }
+  };
 
   const searchInputHandler = () => {
     context.setState(prevState => ({
@@ -29,9 +32,9 @@ const Catalog = () => {
       searchHeader: {
         ...prevState.searchHeader,
         searchStr: prevState.searchStr = prevState.searchHeader.searchPanelCatalog.current.value,
-      }
+      },
     }));
-  }
+  };
 
   const searchInputClear = () => {
     context.setState(prevState => ({
@@ -44,7 +47,7 @@ const Catalog = () => {
         },
       },
     }));
-  }
+  };
 
   const loadMoreHandler = async () => {
     setLoading(true)
@@ -107,10 +110,10 @@ const Catalog = () => {
                 },
               }));
             }, 100);
-          })
+          });
       }
       fetchFunc();
-    }
+    };
     // eslint-disable-next-line
   }, [context.state.searchHeader.searchStr]);
 

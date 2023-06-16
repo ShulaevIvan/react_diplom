@@ -24,8 +24,8 @@ const Header = () => {
                 ...prevState,
                 searchHeader: {
                     ...prevState.searchHeader, 
-                    searchPanelShow: prevState.searchPanelShow = false, 
-                    searchStr: prevState.searchStr = '',
+                    searchPanelShow: prevState.searchHeader.searchPanelShow = false, 
+                    searchStr: prevState.searchHeader.searchStr = '',
                 },
             }));
             return;
@@ -36,8 +36,8 @@ const Header = () => {
                 ...prevState,
                 searchHeader: {
                     ...prevState.searchHeader, 
-                    searchPanelShow: prevState.searchPanelShow = true, 
-                    searchStr: prevState.searchStr = '',
+                    searchPanelShow: prevState.searchHeader.searchPanelShow = true, 
+                    searchStr: prevState.searchHeader.searchStr = '',
                 },
             }));
             return;
@@ -48,10 +48,10 @@ const Header = () => {
             searchHeader: {
                 ...prevState.searchHeader, 
                 searchPanelShow: prevState.searchPanelShow = false, 
-                searchStr: prevState.searchStr = context.state.searchHeader.searchPanel.current.value.trim(),
+                searchStr: prevState.searchHeader.searchStr = context.state.searchHeader.searchPanel.current.value,
             },
         }));
-        navigate('/catalog');
+        setTimeout(() => {navigate('/catalog');}, 300);
     };
     
 
