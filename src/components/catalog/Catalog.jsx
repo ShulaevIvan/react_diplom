@@ -158,4 +158,4 @@ const Catalog = () => {
   );
 };
 
-export default Catalog;
+export default Catalog

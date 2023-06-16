@@ -309,3 +309,11 @@ h2, .h2 {
 .search-hidden {
   display: none;
 }
+.err-block  {
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  display: flex;
+  margin-bottom: 20px;
+}

@@ -1,9 +1,8 @@
 import React from "react";
 import logo from '../../img/header-logo.png'
-import { NavLink, Link } from "react-router-dom";
 import { Context } from "../../Context";
+import { NavLink, Link , useNavigate} from "react-router-dom";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const context = useContext(Context);
@@ -17,7 +16,8 @@ const Header = () => {
                 searchStr: prevState.searchStr = context.state.searchHeader.searchPanel.current.value,
             },
         }));
-    }
+    };
+    
     const searchIconHandler = () => {
         if (!context.state.searchHeader.searchPanel.current.value.trim() && context.state.searchHeader.searchPanelShow) {
             context.setState(prevState => ({

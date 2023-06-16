@@ -77,7 +77,7 @@ const Order = () => {
           ...prevState.userCart,
           cartData: prevState.userCart.cartData = [],
           cartSumm: prevState.userCart.cartSumm = 0,
-        }
+        },
       }));
 
       const fetchFunc = async () => {

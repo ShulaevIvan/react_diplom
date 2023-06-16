@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# Дипломный проект курса «React»
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Дипломный проект представляет собой интернет-магазин обуви. Задача заключается в создании работающего приложения, всеми основными функциями которого можно пользоваться.
 
-## Available Scripts
+Как это всегда бывает, вы, фронтенд-разработчик, — последний в цепочке создания продукта, поэтому вам необходимо пользоваться результатами работы верстальщика и бекэнд-разработчика. И если результаты работы верстальщика вы ещё можете немного подправить, то бэкенд вы уже не имеете права редактировать.
 
-In the project directory, you can run:
+Большая часть разметки и стилей уже реализована за вас и хранится в каталоге `html`. Как всегда, пояснений особо к разметке нет, так как, со слов верстальщика, «там и так всё понятно».
 
-### `npm start`
+Перейдём к самому приложению.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Обязательные условия
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Все функции должны быть реализованы.
 
-### `npm test`
+Внешний вид должен быть аналогичен тому, что представлен в разметке в каталоге `html`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Бэкенд видоизменять нельзя. Всё, что можно там сделать, — это раскомментировать строки для генерации задержки и ошибки:
+```js
+const fortune = (ctx, body = null, status = 200) => {
+    // Uncomment for delay
+    // const delay = randomNumber(1, 10) * 1000;
+    const delay = 0;
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // Uncomment for error generation
+            // if (Math.random() > 0.8) {
+            //     reject(new Error('Something bad happened'));
+            //     return;
+            // }
 
-### `npm run build`
+            ctx.response.status = status;
+            ctx.response.body = body;
+            resolve();
+        }, delay);
+    })
+}
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Они специально закомментированы, чтобы вам не приходилось ждать по 0–10 секунд на каждый запрос и не мучиться с ошибками.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Запускать сервер нужно командой `npm run watch`, не забудьте сначала сделать `npm install`, тогда он запустится в режиме live-reload.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Для хранения состояния корзины и побочных эффектов могут использоваться:
+1. Context API + побочные эффекты в компонентах;
+1. Redux + побочные эффекты в компонентах, либо Action Creator;
+1. Redux + Redux Thunk;
+1. Redux + Redux Observable;
+1. Redux + Redux-saga.
 
-### `npm run eject`
+Выбирайте любой удобный вам способ. Итоговая оценка не зависит от того, какой из пяти способов вы выберите.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Весь код должен быть выложен на GitHub в виде отдельного репозитория.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+При оформлении кода рекомендуем вам опираться на стиль кодирования Airbnb: https://github.com/airbnb/javascript (именно JS, а не React).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Можете ознакомиться с [методическими рекомендациями по оценке диплома](./guidelines.md), в соответствии с которыми дипломные руководители будут оценивать вашу работу.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Важно: не забывайте показывать loader при загрузке и сообщение об ошибке, если с сервера вы её получили или вообще ничего не получили, например, у пользователя сейчас нет интернет-соединения.

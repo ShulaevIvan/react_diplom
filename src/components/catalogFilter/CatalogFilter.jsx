@@ -1,9 +1,7 @@
 import React from "react";
 import { Context } from "../../Context";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Preloader from "../preloader/Preloader";
 
 const CatalogFilter = () => {
