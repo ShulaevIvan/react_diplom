@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Context } from "../../Context";
 import { useContext, useEffect } from "react";
 import Order from "../order/Order";
@@ -9,7 +9,8 @@ const Cart = () => {
     let storage = JSON.parse(localStorage.getItem('userCart'));
     let storageSumm = 0;
 
-    const RmPositionHandler = (id, size, goodName) => {
+    const rmPositionHandler = (id, size, goodName) => {
+        let newSumm = 0;
         context.setState(prevState => ({
             ...prevState,
             userCart: prevState.userCart = {
@@ -18,18 +19,30 @@ const Cart = () => {
             },
         }));
 
-        context.setState(prevState => ({
-            ...prevState,
-            userCart: prevState.userCart = {
+        context.state.userCart.cartData.forEach((item) => {
+            if (item.goodId === id && item.size === size) newSumm -= item.qnt * item.price;
+            newSumm += (item.qnt * item.price);
+        });
+
+        if (newSumm !== context.state.userCart.cartSumm) {
+            context.setState(prevState => ({
+                ...prevState,
+                userCart: prevState.userCart = {
                     ...prevState.userCart,
-                    cartSumm: prevState.cartSumm = Number(checkSumm()),
-            },
-        }));
+                    cartSumm: prevState.cartSumm = newSumm,
+                },
+            }));
+            localStorage.setItem('userCartSumm', JSON.stringify(newSumm));
+        }
         
         const newStorage = JSON.parse(localStorage.getItem('userCart')).filter((item) => item.size === size && item.goodId === id ? item.goodId !== id : item);
         localStorage.setItem('userCart', JSON.stringify(newStorage));
     };
-    
+
+    useEffect(() => {
+        storageSumm = Number(JSON.parse(localStorage.getItem('userCartSumm')));
+    });
+
     useEffect(()=> {
         return () => {
             context.setState(prevState => ({
@@ -41,23 +54,6 @@ const Cart = () => {
             }));
         };
       }, []);
-
-
-    const checkSumm = () => {
-        let summ = 0;
-        if (JSON.parse(localStorage.getItem('userCart'))) {
-            JSON.parse(localStorage.getItem('userCart')).forEach((item) => summ += item.qnt * item.price);
-            return summ;
-        }
-        context.state.userCart.cartData.forEach((item) => summ += item.qnt * item.price);
-
-        return summ;
-    };
-
-    useMemo(() => {
-        storageSumm = checkSumm();
-        localStorage.setItem('userCartSumm', JSON.stringify(storageSumm))
-    }, [context.state.userCart.cartData]);
     
     
     return (
@@ -87,7 +83,7 @@ const Cart = () => {
                                     <td>{good.qnt}</td>
                                     <td>{good.price}руб.</td>
                                     <td>{good.price * good.qnt} руб.</td>
-                                    <td><button className="btn btn-outline-danger btn-sm" onClick={() => RmPositionHandler(good.goodId, good.size, good.goodName)}>Удалить</button></td>
+                                    <td><button className="btn btn-outline-danger btn-sm" onClick={() => rmPositionHandler(good.goodId, good.size, good.goodName)}>Удалить</button></td>
                                 </tr>
                             );
                         })
@@ -101,7 +97,7 @@ const Cart = () => {
                                     <td>{good.qnt}</td>
                                     <td>{good.price}руб.</td>
                                     <td>{good.price * good.qnt} руб.</td>
-                                    <td><button className="btn btn-outline-danger btn-sm" onClick={() => RmPositionHandler(good.goodId, good.size, good.goodName)}>Удалить</button></td>
+                                    <td><button className="btn btn-outline-danger btn-sm" onClick={() => rmPositionHandler(good.goodId, good.size, good.goodName)}>Удалить</button></td>
                                 </tr>
                             );
                         })
